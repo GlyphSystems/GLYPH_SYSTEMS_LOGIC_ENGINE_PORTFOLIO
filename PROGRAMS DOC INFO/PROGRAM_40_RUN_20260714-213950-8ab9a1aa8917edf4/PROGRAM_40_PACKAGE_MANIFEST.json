@@ -1,0 +1,16 @@
+{
+  "created_utc": "2026-07-21T14:54:42+00:00",
+  "included_files": {
+    "PROGRAM_40_12H_MILESTONE_INVESTOR_EVIDENCE.html": "602d4f2042934900c20e53f017802a06b0e683fea74e2c1e8f1d80a72bd9fe54",
+    "PROGRAM_40_12H_MILESTONE_RUN_LOGS.json": "47820ddb20524ae694db06f0f32aabc80a3afef54661a8d81a4a05db2e452b89",
+    "PROGRAM_40_FINAL_INVESTOR_EVIDENCE.html": "0b33903664d0f514927485aeec5537749e0373da77d28e364bd31aa837252b66",
+    "PROGRAM_40_FINAL_RUN_LOGS.json": "5f22b0e80d536ce5f8efc7a3f409e2530b82ec55f5a0c9f0d46fe98c62da658f",
+    "PROGRAM_40_PUBLIC_INCIDENT_SNAPSHOT.json": "b566153efd05f3190a5207ff3b258e595796a7bd9f14134432912083194cc916"
+  },
+  "master_seed": "P40-20260714-213950-8ab9a1aa8917edf4",
+  "note": "Upload this ZIP to ChatGPT for analysis. The proprietary program source is intentionally not included.",
+  "program": "Logic Engine by Glyph Systems \u2014 Public Incident-Driven Medium Financial Run",
+  "source_code_included": false,
+  "source_sha256": "1a4be5a009154abee9d8d093490669bc5f7b826d61a777453d58d208d42e9411",
+  "version": "40.0"
+}

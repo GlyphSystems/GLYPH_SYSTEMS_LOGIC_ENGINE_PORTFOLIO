@@ -1,0 +1,14 @@
+{
+  "created_utc": "2026-07-17T20:15:09+00:00",
+  "included_files": {
+    "PROGRAM_42_FINAL_INVESTOR_EVIDENCE.html": "607f4103a99173cf0d80728d957fcea80524e3e91baa66658b4633769d1921d5",
+    "PROGRAM_42_FINAL_RUN_LOGS.json": "066fa829bc7b7ad98db3b4e3f01f6a80be522d3d4424c8b5ead7520e364683be",
+    "PROGRAM_42_PUBLIC_INCIDENT_SNAPSHOT.json": "44d52369b42645c543b4f428e21823bcdbc70e981fa297398506f58fbf50b5f2"
+  },
+  "master_seed": "P42-20260717-131457-3156ee6e2e5c0e7f",
+  "note": "Upload this ZIP to ChatGPT for analysis. The proprietary program source is intentionally not included.",
+  "program": "Logic Engine by Glyph Systems \u2014 High-Value Treasury and Cross-Border Payout Recovery",
+  "source_code_included": false,
+  "source_sha256": "899ecb137931faab98543ac7d0344db005e19807d18eed455213006cd08a2d78",
+  "version": "42.0"
+}

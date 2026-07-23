@@ -1,0 +1,13 @@
+{
+  "created_utc": "2026-07-17T20:16:29+00:00",
+  "included_files": {
+    "PROGRAM_41_FINAL_INVESTOR_EVIDENCE.html": "79fc6a4205d444d2ecc8bb4e826d1695666236b075298ed64bf17c86656bdc70",
+    "PROGRAM_41_FINAL_RUN_LOGS.json": "4d6665240d2ead2e5876c04fa09731b9951274ba2c885dc170d4c33c6a6ca1aa"
+  },
+  "master_seed": "P41-20260717-131348-a94123fef946a2de",
+  "note": "Upload this ZIP to ChatGPT for analysis. The proprietary program source is intentionally not included.",
+  "program": "Logic Engine by Glyph Systems \u2014 High-Volume Payment Network Recovery Challenge",
+  "source_code_included": false,
+  "source_sha256": "4ea1f6dca34ea656c04b4cd604736db085391f30c43a785b97f960b14a0b48a4",
+  "version": "41.0"
+}

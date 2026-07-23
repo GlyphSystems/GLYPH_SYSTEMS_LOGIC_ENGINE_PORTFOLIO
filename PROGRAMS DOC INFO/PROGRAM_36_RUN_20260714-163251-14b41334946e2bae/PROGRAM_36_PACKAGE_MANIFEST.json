@@ -1,0 +1,15 @@
+{
+  "created_utc": "2026-07-17T19:38:23+00:00",
+  "included_files": {
+    "PROGRAM_36_12H_MILESTONE_INVESTOR_EVIDENCE.html": "726d1ed20e6bd2633711c6d5ea5cf15f6931dff0c8fb576b9250738d703e3a78",
+    "PROGRAM_36_12H_MILESTONE_RUN_LOGS.json": "bdadf675ce3a0356bc0a86353c06049956c9e09646f52e3871163b56675054ba",
+    "PROGRAM_36_FINAL_INVESTOR_EVIDENCE.html": "f9f63ab500af478d008d30e5f268f01b6f8d2adfa96c1cc909593a2523a4e9af",
+    "PROGRAM_36_FINAL_RUN_LOGS.json": "d29b8602e6611638d9c8326f528fb0207b40d9ec59380c4fe34e4d355473a139"
+  },
+  "master_seed": "P36-20260714-163251-14b41334946e2bae",
+  "note": "Upload this ZIP to ChatGPT for analysis. The proprietary program source is intentionally not included.",
+  "program": "Logic Engine by Glyph Systems \u2014 Small Payment Processor Continuous Investor Run",
+  "source_code_included": false,
+  "source_sha256": "71ccc1395016653301752967cdbaa73f948fcdff492270f1ac4afbb4ba9d8953",
+  "version": "36.0"
+}
