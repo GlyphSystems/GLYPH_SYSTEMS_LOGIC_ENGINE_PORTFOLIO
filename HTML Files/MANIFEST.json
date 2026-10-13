@@ -1,0 +1,35 @@
+{
+  "folder_name": "Logic_Engine_43_44_Interactive",
+  "live_pages_url": "https://glyphsystems.github.io/GLYPH_SYSTEMS_LOGIC_ENGINE_PORTFOLIO/Logic_Engine_43_44_Interactive/",
+  "files": {
+    "README.md": {
+      "bytes": 1359,
+      "sha256": "1269117ee22fabc94d1384b8315711126ef1fb5d425274ea7c5d2bc20c9e7248"
+    },
+    "assets/glyph_systems_logo.png": {
+      "bytes": 93900,
+      "sha256": "ff97440d05dc7c6ddc9f2ce8e960ccfe80680e483458177273d4d4c7742cd21d"
+    },
+    "data/program_43_data.json": {
+      "bytes": 15391,
+      "sha256": "ba52255336bbd6ce048a3b4491e6a58cd481b78328d1525fd72f9b3a6b1516ad"
+    },
+    "data/program_44_data.json": {
+      "bytes": 14966,
+      "sha256": "56d8883d35c44c57b260c90ad1980ae8f74eaa106912f442ad948c72fb7ea3b6"
+    },
+    "evidence/Program_43_Full_Evidence.zip": {
+      "bytes": 1532617,
+      "sha256": "8f99d39fcaa993f241d0baecedadcbbd32677ea1a3c12fdeab32f17ae35041bc"
+    },
+    "evidence/Program_44_Full_Evidence.zip": {
+      "bytes": 545001,
+      "sha256": "8c74e6ca71b425c0a618e171f9912b6d61347b7565c8021f24e08df01a062d93"
+    },
+    "index.html": {
+      "bytes": 41597,
+      "sha256": "5852996135b3caef8f6e6be92aad65bf20db62c5aa2a44b3981b91bc38b7ff2b"
+    }
+  },
+  "manifest_note": "MANIFEST.json does not hash itself."
+}

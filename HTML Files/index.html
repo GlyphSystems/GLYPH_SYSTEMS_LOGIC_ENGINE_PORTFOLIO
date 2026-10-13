@@ -1,0 +1,320 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#05070a">
+<title>Glyph Systems — Logic Engine Programs 43 + 44</title>
+<style>
+:root {
+  --bg:#05070a; --panel:#0c1117; --panel2:#101823; --border:#26313d;
+  --text:#eef5fa; --muted:#94a3b2; --cyan:#23d7e8; --yellow:#f6df53;
+  --magenta:#ef58b7; --green:#50e38b; --red:#ff6277; --blue:#62a9ff;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--text);font-family:Arial,Helvetica,sans-serif;line-height:1.5}
+body:before{content:"";position:fixed;inset:0;pointer-events:none;opacity:.14;background-image:linear-gradient(rgba(35,215,232,.08) 1px,transparent 1px),linear-gradient(90deg,rgba(35,215,232,.08) 1px,transparent 1px);background-size:44px 44px}
+.shell{width:min(1180px,calc(100% - 32px));margin:0 auto;position:relative}
+header{padding:28px 0 18px;border-bottom:1px solid var(--border);background:linear-gradient(180deg,rgba(5,7,10,.98),rgba(5,7,10,.92));position:sticky;top:0;z-index:20;backdrop-filter:blur(12px)}
+.brand{display:flex;gap:14px;align-items:center;min-width:0}
+.logo{width:54px;height:54px;border-radius:50%;border:1px solid #2f8c97;object-fit:cover}
+.kicker{font:700 11px/1.1 Consolas,monospace;letter-spacing:1.7px;color:var(--cyan)}
+h1{font-size:clamp(25px,4vw,42px);line-height:1.05;margin:6px 0 0;letter-spacing:-.5px}
+.sub{color:var(--muted);font-size:13px;margin-top:7px}
+.tabbar{display:flex;gap:10px;margin-top:22px;flex-wrap:wrap}
+.tab{appearance:none;border:1px solid var(--border);background:#0b1016;color:var(--text);padding:11px 16px;border-radius:10px;cursor:pointer;font-weight:800}
+.tab.active{border-color:var(--cyan);background:rgba(35,215,232,.11);color:#fff;box-shadow:inset 0 0 0 1px rgba(35,215,232,.18)}
+main{padding:26px 0 60px}
+.panel{display:none}
+.panel.active{display:block}
+.hero{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(280px,.65fr);gap:18px;align-items:stretch}
+.card{background:linear-gradient(155deg,var(--panel),#081019);border:1px solid var(--border);border-radius:15px;padding:20px}
+.card h2,.card h3{margin:0 0 10px}
+.title43{color:var(--cyan)} .title44{color:var(--magenta)}
+.lead{font-size:17px;color:#dce7ef;margin:10px 0 0;max-width:800px}
+.boundary{border-left:4px solid var(--yellow);background:#141308}
+.boundary b{color:var(--yellow)}
+.metrics{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:18px 0}
+.metric{background:var(--panel);border:1px solid var(--border);border-radius:12px;padding:16px;min-height:112px}
+.metric .v{font-size:clamp(22px,3vw,34px);font-weight:900;letter-spacing:-.6px}
+.metric .l{color:var(--muted);font-size:12px;margin-top:6px}
+.cyan{color:var(--cyan)} .magenta{color:var(--magenta)} .yellow{color:var(--yellow)} .green{color:var(--green)} .red{color:var(--red)}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:18px}
+.chart-wrap{height:300px}
+svg.chart{width:100%;height:100%;overflow:visible}
+.legend{display:flex;gap:14px;flex-wrap:wrap;color:var(--muted);font-size:11px;margin-top:8px}
+.legend span:before{content:"";display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:6px;background:var(--dot)}
+.table-wrap{overflow:auto;border:1px solid var(--border);border-radius:12px;margin-top:14px}
+table{width:100%;border-collapse:collapse;min-width:760px;background:#080c11}
+th,td{padding:10px 11px;border-bottom:1px solid #1d2731;font-size:12px;text-align:right;white-space:nowrap}
+th{position:sticky;top:0;background:#111923;color:#b9c6d1;font-family:Consolas,monospace;font-size:10px;letter-spacing:.5px}
+th:first-child,td:first-child,th:nth-child(3),td:nth-child(3){text-align:left}
+.status{display:inline-block;padding:3px 7px;border-radius:999px;border:1px solid currentColor;font-size:10px;font-weight:800}
+.status.ok{color:var(--green)} .status.no{color:var(--red)} .status.partial{color:var(--yellow)}
+.toolbar{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}
+.linkbtn{display:inline-flex;align-items:center;text-decoration:none;color:var(--text);border:1px solid var(--border);background:#0d141c;padding:10px 13px;border-radius:9px;font-weight:800;font-size:12px}
+.linkbtn:hover{border-color:var(--cyan);color:var(--cyan)}
+.note{font-size:12px;color:var(--muted)}
+.callout{padding:14px 16px;border-radius:10px;background:#0b1118;border:1px solid var(--border);margin-top:12px}
+.callout strong{color:var(--yellow)}
+details{margin-top:16px}
+summary{cursor:pointer;color:#dce8f0;font-weight:800}
+.footer{border-top:1px solid var(--border);padding:22px 0 40px;color:var(--muted);font-size:11px}
+@media(max-width:850px){
+  .hero,.grid2{grid-template-columns:1fr}
+  .metrics{grid-template-columns:repeat(2,minmax(0,1fr))}
+  header{position:relative}
+}
+@media(max-width:520px){
+  .shell{width:min(100% - 20px,1180px)}
+  .metrics{grid-template-columns:1fr}
+  .tab{flex:1 1 100%}
+}
+</style>
+</head>
+<body>
+<header>
+  <div class="shell">
+    <div class="brand">
+      <img class="logo" src="assets/glyph_systems_logo.png" alt="Glyph Systems logo">
+      <div>
+        <div class="kicker">GLYPH SYSTEMS / LOGIC ENGINE / CONTROLLED EVIDENCE</div>
+        <h1>Programs 43 + 44</h1>
+        <div class="sub">One compact interactive evidence view. Use the tabs to switch between the two programs.</div>
+      </div>
+    </div>
+    <div class="tabbar" role="tablist" aria-label="Evidence programs">
+      <button class="tab active" id="tab43" role="tab" aria-selected="true" data-target="p43">Program 43 · Escalating Stress</button>
+      <button class="tab" id="tab44" role="tab" aria-selected="false" data-target="p44">Program 44 · Repeated Incident Recovery</button>
+    </div>
+  </div>
+</header>
+
+<main class="shell">
+<section class="panel active" id="p43" role="tabpanel" aria-labelledby="tab43">
+  <div class="hero">
+    <article class="card">
+      <div class="kicker">PROGRAM 43</div>
+      <h2 class="title43">One-Hour Escalating Stress Challenge</h2>
+      <p class="lead">A controlled benchmark that increased synthetic stress from 25% toward 141% while comparing Logic Engine behavior with a strong baseline under matched external conditions.</p>
+      <div class="toolbar">
+        <a class="linkbtn" href="data/program_43_data.json" target="_blank">Open machine-readable data ↗</a>
+        <a class="linkbtn" href="evidence/Program_43_Full_Evidence.zip">Full evidence package ↓</a>
+      </div>
+    </article>
+    <aside class="card boundary">
+      <h3>Evidence boundary</h3>
+      <p><b>Controlled synthetic benchmark.</b> Modeled savings are comparative harness values, not realized customer savings.</p>
+      <p class="note">Program 43 was operator-stopped at the one-hour target. The final stage is partial and is not counted in the 29-stage summary statistics.</p>
+    </aside>
+  </div>
+
+  <div class="metrics">
+    <div class="metric"><div class="v cyan">1 hour</div><div class="l">Elapsed benchmark duration</div></div>
+    <div class="metric"><div class="v cyan">29 + 1</div><div class="l">Completed stages + partial final stage</div></div>
+    <div class="metric"><div class="v green">25 / 29</div><div class="l">Completed stages with positive modeled savings rate</div></div>
+    <div class="metric"><div class="v yellow">$42,015</div><div class="l">Total modeled advantage vs strong baseline</div></div>
+    <div class="metric"><div class="v cyan">57%</div><div class="l">Last verified stable stress index</div></div>
+    <div class="metric"><div class="v red">61%</div><div class="l">Recorded terminal failure boundary</div></div>
+  </div>
+
+  <div class="grid2">
+    <article class="card">
+      <h3>Stage-by-stage modeled advantage</h3>
+      <div class="chart-wrap"><svg class="chart" id="chart43" viewBox="0 0 760 300" aria-label="Program 43 modeled savings by stage"></svg></div>
+      <div class="legend"><span style="--dot:var(--cyan)">Positive</span><span style="--dot:var(--red)">Negative</span><span style="--dot:var(--yellow)">Partial final stage</span></div>
+    </article>
+    <article class="card">
+      <h3>What the run established</h3>
+      <div class="callout"><strong>Matched conditions:</strong> same arrivals, service model, physical capacity ceiling, queue limit, idempotency capability, visible-state source, stress schedule, and frozen accounting.</div>
+      <div class="callout"><strong>Stress schedule:</strong> 30 planned levels, 118 seconds each after calibration, increasing by four percentage points per level.</div>
+      <div class="callout"><strong>Recovery rule:</strong> full recovery required error rate, throughput, latency, and backlog to return to calibrated acceptable ranges for the required stable interval.</div>
+      <p class="note">The 100% stress reference is a benchmark reference point, not a literal claim of production utilization.</p>
+    </article>
+  </div>
+
+  <details>
+    <summary>Show Program 43 stage table</summary>
+    <div class="table-wrap">
+      <table id="table43">
+        <thead><tr><th>Stage</th><th>Stress</th><th>Fault</th><th>Savings / min</th><th>Logic recovery</th><th>Baseline recovery</th><th>Status</th></tr></thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </details>
+</section>
+
+<section class="panel" id="p44" role="tabpanel" aria-labelledby="tab44">
+  <div class="hero">
+    <article class="card">
+      <div class="kicker">PROGRAM 44</div>
+      <h2 class="title44">Repeated Incident Recovery Endurance</h2>
+      <p class="lead">A two-hour, 12-round matched re-exposure benchmark. Four incident templates were repeated three times with fresh seeds while all controllers received identical external conditions within each round.</p>
+      <div class="toolbar">
+        <a class="linkbtn" href="data/program_44_data.json" target="_blank">Open machine-readable data ↗</a>
+        <a class="linkbtn" href="evidence/Program_44_Full_Evidence.zip">Full evidence package ↓</a>
+      </div>
+    </article>
+    <aside class="card boundary">
+      <h3>Evidence boundary</h3>
+      <p><b>Synthetic controlled benchmark only.</b> Modeled operational savings are not realized customer savings or guaranteed commercial performance.</p>
+      <p class="note">The matched re-exposure analysis reported <b>no clear improvement signal</b> across the repeated template exposures. That negative result is preserved here.</p>
+    </aside>
+  </div>
+
+  <div class="metrics">
+    <div class="metric"><div class="v magenta">2 hours</div><div class="l">Completed endurance duration</div></div>
+    <div class="metric"><div class="v magenta">12 / 12</div><div class="l">Rounds completed</div></div>
+    <div class="metric"><div class="v green">72 / 72</div><div class="l">Validated-state Logic Engine recovery episodes completed</div></div>
+    <div class="metric"><div class="v yellow">63 / 72</div><div class="l">Strong baseline recovery episodes completed</div></div>
+    <div class="metric"><div class="v magenta">$1,660</div><div class="l">Persistent-state modeled advantage vs baseline</div></div>
+    <div class="metric"><div class="v cyan">$13.84/min</div><div class="l">Persistent-state modeled advantage rate</div></div>
+  </div>
+
+  <div class="grid2">
+    <article class="card">
+      <h3>Modeled advantage by round</h3>
+      <div class="chart-wrap"><svg class="chart" id="chart44" viewBox="0 0 760 300" aria-label="Program 44 modeled advantage per round"></svg></div>
+      <div class="legend"><span style="--dot:var(--magenta)">Validated-state Logic Engine advantage</span></div>
+    </article>
+    <article class="card">
+      <h3>Matched re-exposure result</h3>
+      <div class="callout"><strong>Template A:</strong> Delivery + Capacity — no clear matched re-exposure improvement signal.</div>
+      <div class="callout"><strong>Template B:</strong> State + Queue — no clear matched re-exposure improvement signal.</div>
+      <div class="callout"><strong>Template C:</strong> Order + Restoration — no clear matched re-exposure improvement signal.</div>
+      <div class="callout"><strong>Template D:</strong> Mixed Pressure — no clear matched re-exposure improvement signal.</div>
+      <p class="note">The validated-state controller still completed all 72 recorded recovery episodes. The re-exposure test specifically asked whether repeated exposure produced a clear learning/improvement trend; it did not.</p>
+    </article>
+  </div>
+
+  <details>
+    <summary>Show Program 44 round table</summary>
+    <div class="table-wrap">
+      <table id="table44">
+        <thead><tr><th>Round</th><th>Exposure</th><th>Template</th><th>Advantage / min</th><th>Logic recovery</th><th>Baseline recovery</th><th>Status</th></tr></thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </details>
+</section>
+</main>
+
+<footer class="footer">
+  <div class="shell">Glyph Systems · Logic Engine — Financial Recovery System · Controlled evidence presentation. Private mechanism details are intentionally excluded.</div>
+</footer>
+
+<script>
+const P43 = {"program":"Logic Engine by Glyph Systems \u2014 Program 43 One-Hour Escalating Stress Challenge","version":"43.0","duration_seconds":3599.9999999978213,"completed_stage_count":29,"partial_stage_count":1,"operator_stopped":true,"logic_last_verified_stable_stress_percent":57.0,"logic_terminal_failure_boundary_percent":61.0,"total_modeled_savings_vs_strong_usd":42015.48783999955,"modeled_savings_per_minute_usd":700.2581306670829,"stage_statistics":{"best":8622.416867796444,"count":29,"mean":736.539276680293,"median":145.22229152543656,"negative_stages":4,"positive_stages":25,"worst":-5.949071186440444},"stress_definition":{"calibration_seconds":60.0,"final_percent":141.0,"levels":30,"reference_note":"100% is a predeclared benchmark reference point, not literal production utilization. Values above 100% intentionally push beyond that reference.","stage_seconds":118.0,"start_percent":25.0,"type":"synthetic benchmark pressure index"},"workload":{"clean_utilization_percent":58.3333333333,"maximum_simulation_units_per_second":120.0,"profile_name":"HIGH_VOLUME_PAYMENT_NETWORK_ESCALATING_STRESS","queue_limit_simulation_units":40000,"represented_baseline_events_per_second":7000.0,"represented_events_per_simulation_unit":100,"represented_maximum_events_per_second":12000.0,"represented_queue_limit_events":4000000,"scope_boundary":"Compressed controlled benchmark; not a claim about a named payment network, private production traffic, or systemically critical market infrastructure.","simulation_units_per_second":70.0},"public_method_snapshot":"PROGRAM 43 PUBLIC METHOD SNAPSHOT\r\n\r\nRun duration: 3600.0 seconds\r\nCalibration: 60.0 seconds\r\nStress levels: 30\r\nStage duration: 118.000 seconds\r\nStress index: 25.0% to 141.0%\r\nStress increment: +4 percentage points per level\r\nFault time fraction: 50% at level 1, rising linearly to 65% at level 30\r\nSeverity multiplier formula: 0.55 + 0.95 * (stress_index / 100)\r\nAbove 100% reference stress, a predeclared overdrive term further reduces capacity and raises service/ACK pressure.\r\n\r\nPrimary modeled savings formula:\r\n  strong_baseline_modeled_loss - logic_engine_modeled_loss\r\n\r\nFairness:\r\n  Same arrivals, hidden service outcomes, capacity ceiling, queue limit, retry limit,\r\n  idempotency capability, visible state source, stress schedule, and frozen accounting.\r\n\r\nRecovery criterion:\r\n  The embedded benchmark marks full recovery only after error rate, throughput,\r\n  latency, and backlog have all returned to calibrated acceptable ranges for\r\n  the required stable interval.\r\n\r\nClaim boundary:\r\n  Modeled savings are controlled-harness comparative values, not realized customer savings.\r\n","stages":[{"level":1,"stress_index_percent":25.0,"stress_band":"LIGHT","public_fault":"LATENCY / JITTER","modeled_savings_usd":-0.252000000000006,"modeled_savings_per_minute_usd":-0.12813559322034204,"logic_recovered":true,"logic_recovery_s":1.4999999999999147,"baseline_recovered":true,"baseline_recovery_s":1.3999999999999204,"partial":false},{"level":2,"stress_index_percent":29.0,"stress_band":"LIGHT","public_fault":"ACKNOWLEDGEMENT LOSS","modeled_savings_usd":126.11935999999983,"modeled_savings_per_minute_usd":64.12848813559313,"logic_recovered":true,"logic_recovery_s":11.699999999999335,"baseline_recovered":true,"baseline_recovery_s":43.40000000000464,"partial":false},{"level":3,"stress_index_percent":33.0,"stress_band":"LIGHT","public_fault":"DUPLICATE PRESSURE","modeled_savings_usd":-11.69983999999954,"modeled_savings_per_minute_usd":-5.949071186440444,"logic_recovered":true,"logic_recovery_s":46.40000000001055,"baseline_recovered":true,"baseline_recovery_s":1.2000000000002728,"partial":false},{"level":4,"stress_index_percent":37.0,"stress_band":"LIGHT","public_fault":"STALE STATE","modeled_savings_usd":113.87648000000058,"modeled_savings_per_minute_usd":57.903294915254534,"logic_recovered":true,"logic_recovery_s":41.000000000009265,"baseline_recovered":false,"baseline_recovery_s":null,"partial":false},{"level":5,"stress_index_percent":41.0,"stress_band":"LIGHT","public_fault":"CAPACITY REDUCTION","modeled_savings_usd":12.898239999997713,"modeled_savings_per_minute_usd":6.558427118642905,"logic_recovered":false,"logic_recovery_s":null,"baseline_recovered":false,"baseline_recovery_s":null,"partial":false},{"level":6,"stress_index_percent":45.0,"stress_band":"LIGHT","public_fault":"QUEUE SURGE","modeled_savings_usd":78.8179200000011,"modeled_savings_per_minute_usd":40.07690847457683,"logic_recovered":false,"logic_recovery_s":null,"baseline_recovered":false,"baseline_recovery_s":null,"partial":false},{"level":7,"stress_index_percent":49.0,"stress_band":"LIGHT","public_fault":"MESSAGE REORDERING","modeled_savings_usd":158.94383999999627,"modeled_savings_per_minute_usd":80.81890169491336,"logic_recovered":false,"logic_recovery_s":null,"baseline_recovered":false,"baseline_recovery_s":null,"partial":false},{"level":8,"stress_index_percent":53.0,"stress_band":"MODERATE","public_fault":"LATENCY / JITTER","modeled_savings_usd":25.484479999997802,"modeled_savings_per_minute_usd":12.958210169490409,"logic_recovered":true,"logic_recovery_s":19.30000000000439,"baseline_recovered":true,"baseline_recovery_s":29.400000000006685,"partial":false},{"level":9,"stress_index_percent":57.0,"stress_band":"MODERATE","public_fault":"ACKNOWLEDGEMENT LOSS","modeled_savings_usd":120.06768000000147,"modeled_savings_per_minute_usd":61.05136271186516,"logic_recovered":true,"logic_recovery_s":24.39999999997781,"baseline_recovered":true,"baseline_recovery_s":48.899999999955526,"partial":false},{"level":10,"stress_index_percent":61.0,"stress_band":"MODERATE","public_fault":"COMPOUND FAULT","modeled_savings_usd":90.11503999998831,"modeled_savings_per_minute_usd":45.82120677965508,"logic_recovered":false,"logic_recovery_s":null,"baseline_recovered":false,"baseline_recovery_s":null,"partial":false},{"level":11,"stress_index_percent":65.0,"stress_band":"MODERATE","public_fault":"STALE STATE","modeled_savings_usd":285.60384000002523,"modeled_savings_per_minute_usd":145.22229152543656,"logic_recovered":false,"logic_recovery_s":null,"baseline_recovered":false,"baseline_recovery_s":null,"partial":false},{"level":12,"stress_index_percent":69.0,"stress_band":"MODERATE","public_fault":"DUPLICATE PRESSURE","modeled_savings_usd":207.88800000000265,"modeled_savings_per_minute_usd":105.70576271186576,"logic_recovered":false,"logic_recovery_s":null,"baseline_recovered":false,"baseline_recovery_s":null,"partial":false},{"level":13,"stress_index_percent":73.0,"stress_band":"MODERATE","public_fault":"CAPACITY REDUCTION","modeled_savings_usd":159.84111999999277,"modeled_savings_per_minute_usd":81.27514576270819,"logic_recovered":false,"logic_recovery_s":null,"baseline_recovered":false,"baseline_recovery_s":null,"partial":false},{"level":14,"stress_index_percent":77.0,"stress_band":"HEAVY","public_fault":"QUEUE SURGE","modeled_savings_usd":317.3174400000189,"modeled_savings_per_minute_usd":161.34785084746724,"logic_recovered":false,"logic_recovery_s":null,"baseline_recovered":false,"baseline_recovery_s":null,"partial":false},{"level":15,"stress_index_percent":81.0,"stress_band":"HEAVY","public_fault":"FALSE RESTORATION","modeled_savings_usd":439.6030399999945,"modeled_savings_per_minute_usd":223.52696949152264,"logic_recovered":false,"logic_recovery_s":null,"baseline_recovered":false,"baseline_recovery_s":null,"partial":false},{"level":16,"stress_index_percent":85.0,"stress_band":"HEAVY","public_fault":"MESSAGE REORDERING","modeled_savings_usd":597.9192000000749,"modeled_savings_per_minute_usd":304.02671186444485,"logic_recovered":false,"logic_recovery_s":null,"baseline_recovered":false,"baseline_recovery_s":null,"partial":false},{"level":17,"stress_index_percent":89.0,"stress_band":"HEAVY","public_fault":"SERVICE INTERRUPTION","modeled_savings_usd":599.9227199999896,"modeled_savings_per_minute_usd":305.04545084745234,"logic_recovered":false,"logic_recovery_s":null,"baseline_recovered":false,"baseline_recovery_s":null,"partial":false},{"level":18,"stress_index_percent":93.0,"stress_band":"HEAVY","public_fault":"ACKNOWLEDGEMENT LOSS","modeled_savings_usd":928.9339200000504,"modeled_savings_per_minute_usd":472.3392813559579,"logic_recovered":false,"logic_recovery_s":null,"baseline_recovered":false,"baseline_recovery_s":null,"partial":false},{"level":19,"stress_index_percent":97.0,"stress_band":"HEAVY","public_fault":"COMPOUND FAULT","modeled_savings_usd":936.3265599999286,"modeled_savings_per_minute_usd":476.09825084742135,"logic_recovered":false,"logic_recovery_s":null,"baseline_recovered":false,"baseline_recovery_s":null,"partial":false},{"level":20,"stress_index_percent":101.0,"stress_band":"SEVERE","public_fault":"CAPACITY REDUCTION","modeled_savings_usd":936.102719999988,"modeled_savings_per_minute_usd":475.984433898299,"logic_recovered":false,"logic_recovery_s":null,"baseline_recovered":false,"baseline_recovery_s":null,"partial":false},{"level":21,"stress_index_percent":105.0,"stress_band":"SEVERE","public_fault":"STALE STATE","modeled_savings_usd":1775.5704000001497,"modeled_savings_per_minute_usd":902.8324067797372,"logic_recovered":false,"logic_recovery_s":null,"baseline_recovered":false,"baseline_recovery_s":null,"partial":false},{"level":22,"stress_index_percent":109.0,"stress_band":"SEVERE","public_fault":"DUPLICATE PRESSURE","modeled_savings_usd":6993.810399999871,"modeled_savings_per_minute_usd":3556.1747796609516,"logic_recovered":false,"logic_recovery_s":null,"baseline_recovered":false,"baseline_recovery_s":null,"partial":false},{"level":23,"stress_index_percent":113.0,"stress_band":"SEVERE","public_fault":"QUEUE SURGE","modeled_savings_usd":16957.419839999675,"modeled_savings_per_minute_usd":8622.416867796444,"logic_recovered":false,"logic_recovery_s":null,"baseline_recovered":false,"baseline_recovery_s":null,"partial":false},{"level":24,"stress_index_percent":117.0,"stress_band":"SEVERE","public_fault":"FALSE RESTORATION","modeled_savings_usd":1061.7457600001799,"modeled_savings_per_minute_usd":539.8707254238203,"logic_recovered":false,"logic_recovery_s":null,"baseline_recovered":false,"baseline_recovery_s":null,"partial":false},{"level":25,"stress_index_percent":121.0,"stress_band":"EXTREME","public_fault":"SERVICE INTERRUPTION","modeled_savings_usd":718.4504000000161,"modeled_savings_per_minute_usd":365.3137627118726,"logic_recovered":false,"logic_recovery_s":null,"baseline_recovered":false,"baseline_recovery_s":null,"partial":false},{"level":26,"stress_index_percent":125.0,"stress_band":"EXTREME","public_fault":"COMPOUND FAULT","modeled_savings_usd":-0.22736000001896173,"modeled_savings_per_minute_usd":-0.11560677967065851,"logic_recovered":false,"logic_recovery_s":null,"baseline_recovered":false,"baseline_recovery_s":null,"partial":false},{"level":27,"stress_index_percent":129.0,"stress_band":"EXTREME","public_fault":"ACKNOWLEDGEMENT LOSS","modeled_savings_usd":7504.147359999479,"modeled_savings_per_minute_usd":3815.6681491522777,"logic_recovered":false,"logic_recovery_s":null,"baseline_recovered":false,"baseline_recovery_s":null,"partial":false},{"level":28,"stress_index_percent":133.0,"stress_band":"EXTREME","public_fault":"CAPACITY REDUCTION","modeled_savings_usd":876.7998399997887,"modeled_savings_per_minute_usd":445.83042711853665,"logic_recovered":false,"logic_recovery_s":null,"baseline_recovered":false,"baseline_recovery_s":null,"partial":false},{"level":29,"stress_index_percent":137.0,"stress_band":"BREAKPOINT","public_fault":"COMPOUND FAULT","modeled_savings_usd":-4.2563199998112395,"modeled_savings_per_minute_usd":-2.1642305083785964,"logic_recovered":false,"logic_recovery_s":null,"baseline_recovered":false,"baseline_recovery_s":null,"partial":false},{"level":30,"stress_index_percent":141.0,"stress_band":"BREAKPOINT","public_fault":"SERVICE INTERRUPTION","modeled_savings_usd":8.198240000172518,"modeled_savings_per_minute_usd":4.16859661033418,"logic_recovered":false,"logic_recovery_s":null,"baseline_recovered":false,"baseline_recovery_s":null,"partial":true}],"claim_boundary":"Modeled savings are controlled-harness comparative values, not realized customer savings."};
+const P44 = {"program":"Logic Engine by Glyph Systems \u2014 Program 44 Repeated Incident Recovery Endurance","duration_hours":2.0,"rounds_complete":12,"rounds_total":12,"persistent":{"ack_unknowns":15621.0,"advantage_vs_baseline_per_minute_usd":13.835470666666682,"advantage_vs_baseline_usd":1660.2564800000018,"arrivals":547708.0,"average_latency_s":6.709704429449412,"backlog_area_tx_s":3674149.700000001,"completed":547585.0,"duplicate_conflicts":3238.0,"failed":0.0,"maximum_latency_s":68.90000000001567,"modeled_loss_usd":8637.364320000002,"queue_drops":0.0,"recovery":{"censored":0,"completed":72,"completion_rate":1.0,"episodes":72},"retries":32994.0,"stale_rejects":9034.0,"unresolved":123.0,"verification_checks":16568.0},"strong_baseline":{"ack_unknowns":13537.0,"advantage_vs_baseline_per_minute_usd":0.0,"advantage_vs_baseline_usd":0.0,"arrivals":547708.0,"average_latency_s":7.823734762639939,"backlog_area_tx_s":4284176.000000002,"completed":547585.0,"duplicate_conflicts":4116.0,"failed":0.0,"maximum_latency_s":59.8000000000136,"modeled_loss_usd":10297.620800000004,"queue_drops":0.0,"recovery":{"censored":9,"completed":63,"completion_rate":0.875,"episodes":72},"retries":29336.0,"stale_rejects":7888.0,"unresolved":123.0,"verification_checks":14347.0},"ablation":{"ack_unknowns":15738.0,"advantage_vs_baseline_per_minute_usd":14.35193066666672,"advantage_vs_baseline_usd":1722.2316800000062,"arrivals":547708.0,"average_latency_s":6.618324095802618,"backlog_area_tx_s":3624111.199999999,"completed":547585.0,"duplicate_conflicts":3259.0,"failed":0.0,"maximum_latency_s":62.9000000000143,"modeled_loss_usd":8575.389119999998,"queue_drops":0.0,"recovery":{"censored":0,"completed":72,"completion_rate":1.0,"episodes":72},"retries":33264.0,"stale_rejects":9127.0,"unresolved":123.0,"verification_checks":16697.0},"reexposure_analysis":{"A":{"exposures":[{"ablation_modeled_loss_usd":675.5436799999997,"ablation_recovery_mean_s":24.966666666670434,"exposure":1,"persistent_advantage_vs_baseline_usd":110.96800000000133,"persistent_modeled_loss_usd":677.2302400000001,"persistent_recovery_mean_s":25.28333333333723,"reset_modeled_loss_usd":677.2302400000001,"reset_recovery_mean_s":25.28333333333723,"round":1},{"ablation_modeled_loss_usd":693.2408000000011,"ablation_recovery_mean_s":25.10000000000382,"exposure":2,"persistent_advantage_vs_baseline_usd":102.87375999999972,"persistent_modeled_loss_usd":697.5116799999996,"persistent_recovery_mean_s":25.06666666667058,"reset_modeled_loss_usd":697.5116799999996,"reset_recovery_mean_s":25.06666666667058,"round":5},{"ablation_modeled_loss_usd":676.9235199999985,"ablation_recovery_mean_s":25.083333333337112,"exposure":3,"persistent_advantage_vs_baseline_usd":97.5396800000002,"persistent_modeled_loss_usd":681.7428799999991,"persistent_recovery_mean_s":25.833333333337173,"reset_modeled_loss_usd":681.7433599999991,"reset_recovery_mean_s":25.833333333337173,"round":9}],"status":"NO_CLEAR_MATCHED_REEXPOSURE_IMPROVEMENT_SIGNAL","template_label":"DELIVERY + CAPACITY"},"B":{"exposures":[{"ablation_modeled_loss_usd":766.3561599999985,"ablation_recovery_mean_s":29.25000000000328,"exposure":1,"persistent_advantage_vs_baseline_usd":185.6073600000011,"persistent_modeled_loss_usd":775.6739199999985,"persistent_recovery_mean_s":28.51666666666976,"reset_modeled_loss_usd":775.6739199999985,"reset_recovery_mean_s":28.51666666666976,"round":2},{"ablation_modeled_loss_usd":800.24736,"ablation_recovery_mean_s":30.450000000003218,"exposure":2,"persistent_advantage_vs_baseline_usd":193.53839999999707,"persistent_modeled_loss_usd":804.5414400000017,"persistent_recovery_mean_s":31.016666666669863,"reset_modeled_loss_usd":804.5414400000017,"reset_recovery_mean_s":31.016666666669863,"round":6},{"ablation_modeled_loss_usd":785.0631999999987,"ablation_recovery_mean_s":30.066666666669917,"exposure":3,"persistent_advantage_vs_baseline_usd":147.6135999999991,"persistent_modeled_loss_usd":795.6545600000018,"persistent_recovery_mean_s":29.850000000003067,"reset_modeled_loss_usd":795.6545600000018,"reset_recovery_mean_s":29.850000000003067,"round":10}],"status":"NO_CLEAR_MATCHED_REEXPOSURE_IMPROVEMENT_SIGNAL","template_label":"STATE + QUEUE"},"C":{"exposures":[{"ablation_modeled_loss_usd":703.17856,"ablation_recovery_mean_s":28.550000000003507,"exposure":1,"persistent_advantage_vs_baseline_usd":167.44880000000273,"persistent_modeled_loss_usd":707.5044799999991,"persistent_recovery_mean_s":29.583333333337038,"reset_modeled_loss_usd":707.5044799999991,"reset_recovery_mean_s":29.583333333337038,"round":3},{"ablation_modeled_loss_usd":703.8123200000022,"ablation_recovery_mean_s":28.516666666670186,"exposure":2,"persistent_advantage_vs_baseline_usd":158.41968000000043,"persistent_modeled_loss_usd":714.5360000000003,"persistent_recovery_mean_s":28.333333333336725,"reset_modeled_loss_usd":714.5360000000003,"reset_recovery_mean_s":28.333333333336725,"round":7},{"ablation_modeled_loss_usd":699.1451199999988,"ablation_recovery_mean_s":29.08333333333702,"exposure":3,"persistent_advantage_vs_baseline_usd":156.41344000000163,"persistent_modeled_loss_usd":702.7107199999984,"persistent_recovery_mean_s":29.350000000003693,"reset_modeled_loss_usd":702.7107199999984,"reset_recovery_mean_s":29.350000000003693,"round":11}],"status":"NO_CLEAR_MATCHED_REEXPOSURE_IMPROVEMENT_SIGNAL","template_label":"ORDER + RESTORATION"},"D":{"exposures":[{"ablation_modeled_loss_usd":676.1684800000007,"ablation_recovery_mean_s":24.45000000000293,"exposure":1,"persistent_advantage_vs_baseline_usd":102.51440000000036,"persistent_modeled_loss_usd":682.593280000001,"persistent_recovery_mean_s":24.583333333336213,"reset_modeled_loss_usd":682.593280000001,"reset_recovery_mean_s":24.583333333336213,"round":4},{"ablation_modeled_loss_usd":700.3252800000002,"ablation_recovery_mean_s":26.483333333336578,"exposure":2,"persistent_advantage_vs_baseline_usd":89.03120000000081,"persistent_modeled_loss_usd":703.85216,"persistent_recovery_mean_s":27.01666666666993,"reset_modeled_loss_usd":703.85168,"reset_recovery_mean_s":27.01666666666993,"round":8},{"ablation_modeled_loss_usd":695.3846400000001,"ablation_recovery_mean_s":25.06666666666952,"exposure":3,"persistent_advantage_vs_baseline_usd":148.28815999999756,"persistent_modeled_loss_usd":693.8129600000022,"persistent_recovery_mean_s":24.933333333336154,"reset_modeled_loss_usd":693.8124800000021,"reset_recovery_mean_s":24.933333333336154,"round":12}],"status":"NO_CLEAR_MATCHED_REEXPOSURE_IMPROVEMENT_SIGNAL","template_label":"MIXED PRESSURE"}},"claim_boundary":"Synthetic controlled benchmark only. Modeled operational savings are not realized customer savings or guaranteed commercial performance.","rounds":[{"round":1,"template_id":"A","template_label":"DELIVERY + CAPACITY","exposure":1,"persistent_advantage_vs_baseline_usd":110.96800000000133,"persistent_advantage_vs_baseline_per_minute_usd":11.096800000000133,"persistent_recovery_completed":6,"persistent_recovery_episodes":6,"strong_recovery_completed":6,"strong_recovery_episodes":6,"ablation_advantage_vs_baseline_usd":112.65456000000177,"partial":false},{"round":2,"template_id":"B","template_label":"STATE + QUEUE","exposure":1,"persistent_advantage_vs_baseline_usd":185.6073600000011,"persistent_advantage_vs_baseline_per_minute_usd":18.560736000000112,"persistent_recovery_completed":6,"persistent_recovery_episodes":6,"strong_recovery_completed":5,"strong_recovery_episodes":6,"ablation_advantage_vs_baseline_usd":194.92512000000113,"partial":false},{"round":3,"template_id":"C","template_label":"ORDER + RESTORATION","exposure":1,"persistent_advantage_vs_baseline_usd":167.44880000000273,"persistent_advantage_vs_baseline_per_minute_usd":16.744880000000272,"persistent_recovery_completed":6,"persistent_recovery_episodes":6,"strong_recovery_completed":4,"strong_recovery_episodes":6,"ablation_advantage_vs_baseline_usd":171.77472000000193,"partial":false},{"round":4,"template_id":"D","template_label":"MIXED PRESSURE","exposure":1,"persistent_advantage_vs_baseline_usd":102.51440000000036,"persistent_advantage_vs_baseline_per_minute_usd":10.251440000000036,"persistent_recovery_completed":6,"persistent_recovery_episodes":6,"strong_recovery_completed":6,"strong_recovery_episodes":6,"ablation_advantage_vs_baseline_usd":108.9392000000006,"partial":false},{"round":5,"template_id":"A","template_label":"DELIVERY + CAPACITY","exposure":2,"persistent_advantage_vs_baseline_usd":102.87375999999972,"persistent_advantage_vs_baseline_per_minute_usd":10.287375999999972,"persistent_recovery_completed":6,"persistent_recovery_episodes":6,"strong_recovery_completed":6,"strong_recovery_episodes":6,"ablation_advantage_vs_baseline_usd":107.14463999999828,"partial":false},{"round":6,"template_id":"B","template_label":"STATE + QUEUE","exposure":2,"persistent_advantage_vs_baseline_usd":193.53839999999707,"persistent_advantage_vs_baseline_per_minute_usd":19.353839999999707,"persistent_recovery_completed":6,"persistent_recovery_episodes":6,"strong_recovery_completed":5,"strong_recovery_episodes":6,"ablation_advantage_vs_baseline_usd":197.83247999999878,"partial":false},{"round":7,"template_id":"C","template_label":"ORDER + RESTORATION","exposure":2,"persistent_advantage_vs_baseline_usd":158.41968000000043,"persistent_advantage_vs_baseline_per_minute_usd":15.841968000000042,"persistent_recovery_completed":6,"persistent_recovery_episodes":6,"strong_recovery_completed":4,"strong_recovery_episodes":6,"ablation_advantage_vs_baseline_usd":169.14335999999855,"partial":false},{"round":8,"template_id":"D","template_label":"MIXED PRESSURE","exposure":2,"persistent_advantage_vs_baseline_usd":89.03120000000081,"persistent_advantage_vs_baseline_per_minute_usd":8.903120000000081,"persistent_recovery_completed":6,"persistent_recovery_episodes":6,"strong_recovery_completed":6,"strong_recovery_episodes":6,"ablation_advantage_vs_baseline_usd":92.55808000000059,"partial":false},{"round":9,"template_id":"A","template_label":"DELIVERY + CAPACITY","exposure":3,"persistent_advantage_vs_baseline_usd":97.5396800000002,"persistent_advantage_vs_baseline_per_minute_usd":9.75396800000002,"persistent_recovery_completed":6,"persistent_recovery_episodes":6,"strong_recovery_completed":6,"strong_recovery_episodes":6,"ablation_advantage_vs_baseline_usd":102.35904000000085,"partial":false},{"round":10,"template_id":"B","template_label":"STATE + QUEUE","exposure":3,"persistent_advantage_vs_baseline_usd":147.6135999999991,"persistent_advantage_vs_baseline_per_minute_usd":14.761359999999911,"persistent_recovery_completed":6,"persistent_recovery_episodes":6,"strong_recovery_completed":5,"strong_recovery_episodes":6,"ablation_advantage_vs_baseline_usd":158.2049600000022,"partial":false},{"round":11,"template_id":"C","template_label":"ORDER + RESTORATION","exposure":3,"persistent_advantage_vs_baseline_usd":156.41344000000163,"persistent_advantage_vs_baseline_per_minute_usd":15.641344000000164,"persistent_recovery_completed":6,"persistent_recovery_episodes":6,"strong_recovery_completed":4,"strong_recovery_episodes":6,"ablation_advantage_vs_baseline_usd":159.9790400000013,"partial":false},{"round":12,"template_id":"D","template_label":"MIXED PRESSURE","exposure":3,"persistent_advantage_vs_baseline_usd":148.28815999999756,"persistent_advantage_vs_baseline_per_minute_usd":14.828815999999756,"persistent_recovery_completed":6,"persistent_recovery_episodes":6,"strong_recovery_completed":6,"strong_recovery_episodes":6,"ablation_advantage_vs_baseline_usd":146.7164799999997,"partial":false}]};
+
+const tabs = [...document.querySelectorAll('.tab')];
+const panels = [...document.querySelectorAll('.panel')];
+
+function activate(id) {
+  tabs.forEach(t => {
+    const on = t.dataset.target === id;
+    t.classList.toggle('active', on);
+    t.setAttribute('aria-selected', on ? 'true' : 'false');
+  });
+  panels.forEach(p => p.classList.toggle('active', p.id === id));
+  history.replaceState(null, '', id === 'p44' ? '#program44' : '#program43');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+tabs.forEach(t => t.addEventListener('click', () => activate(t.dataset.target)));
+
+function money(v) {
+  const a = Math.abs(v);
+  const s = a >= 1000 ? '$' + a.toLocaleString(undefined,{maximumFractionDigits:0}) : '$' + a.toFixed(2);
+  return (v < 0 ? '−' : '') + s;
+}
+function rate(v) {
+  return (v < 0 ? '−' : '') + '$' + Math.abs(v).toFixed(2);
+}
+function recoveryCell(ok, seconds) {
+  if (!ok) return '<span class="status no">NOT RECOVERED</span>';
+  if (seconds == null) return '<span class="status ok">RECOVERED</span>';
+  return '<span class="status ok">' + Number(seconds).toFixed(1) + 's</span>';
+}
+
+function render43Table() {
+  const tbody = document.querySelector('#table43 tbody');
+  tbody.innerHTML = P43.stages.map(r => `
+    <tr>
+      <td>${r.level}</td>
+      <td>${r.stress_index_percent.toFixed(0)}%</td>
+      <td>${r.public_fault}</td>
+      <td class="${r.modeled_savings_per_minute_usd>=0?'green':'red'}">${rate(r.modeled_savings_per_minute_usd)}</td>
+      <td>${recoveryCell(r.logic_recovered,r.logic_recovery_s)}</td>
+      <td>${recoveryCell(r.baseline_recovered,r.baseline_recovery_s)}</td>
+      <td>${r.partial?'<span class="status partial">PARTIAL</span>':'<span class="status ok">COMPLETE</span>'}</td>
+    </tr>`).join('');
+}
+
+function render44Table() {
+  const tbody = document.querySelector('#table44 tbody');
+  tbody.innerHTML = P44.rounds.map(r => `
+    <tr>
+      <td>${r.round}</td>
+      <td>${r.exposure}</td>
+      <td>${r.template_id} · ${r.template_label}</td>
+      <td class="${r.persistent_advantage_vs_baseline_per_minute_usd>=0?'green':'red'}">${rate(r.persistent_advantage_vs_baseline_per_minute_usd)}</td>
+      <td><span class="status ok">${r.persistent_recovery_completed} / ${r.persistent_recovery_episodes}</span></td>
+      <td><span class="status ${r.strong_recovery_completed===r.strong_recovery_episodes?'ok':'no'}">${r.strong_recovery_completed} / ${r.strong_recovery_episodes}</span></td>
+      <td><span class="status ok">COMPLETE</span></td>
+    </tr>`).join('');
+}
+
+function clearSvg(svg) { while (svg.firstChild) svg.removeChild(svg.firstChild); }
+function el(tag, attrs={}) {
+  const n=document.createElementNS('http://www.w3.org/2000/svg',tag);
+  Object.entries(attrs).forEach(([k,v])=>n.setAttribute(k,v));
+  return n;
+}
+
+function drawBars(svg, values, colors, labels, zeroAware=true) {
+  clearSvg(svg);
+  const W=760,H=300,L=54,R=18,T=22,B=42;
+  const w=W-L-R,h=H-T-B;
+  const minV = zeroAware ? Math.min(0,...values) : Math.min(...values);
+  const maxV = zeroAware ? Math.max(0,...values) : Math.max(...values);
+  const span=(maxV-minV)||1;
+  const y=v=>T+(maxV-v)/span*h;
+  const zeroY=y(0);
+  svg.appendChild(el('line',{x1:L,y1:zeroY,x2:W-R,y2:zeroY,stroke:'#536273','stroke-width':1}));
+  const bw=w/values.length;
+  values.forEach((v,i)=>{
+    const yy=y(v), top=Math.min(yy,zeroY), bh=Math.max(1,Math.abs(zeroY-yy));
+    const rect=el('rect',{x:L+i*bw+bw*.18,y:top,width:bw*.64,height:bh,rx:2,fill:colors[i]});
+    rect.appendChild(document.createElementNS('http://www.w3.org/2000/svg','title')).textContent=`${labels[i]}: ${v.toFixed(2)}`;
+    svg.appendChild(rect);
+    if (i%Math.max(1,Math.ceil(values.length/10))===0) {
+      const tx=el('text',{x:L+i*bw+bw*.5,y:H-18,fill:'#91a0ae','font-size':10,'text-anchor':'middle'});
+      tx.textContent=labels[i]; svg.appendChild(tx);
+    }
+  });
+  [minV,maxV].forEach(v=>{
+    const tx=el('text',{x:L-8,y:y(v)+4,fill:'#91a0ae','font-size':10,'text-anchor':'end'});
+    tx.textContent=v.toFixed(0); svg.appendChild(tx);
+  });
+}
+
+function renderCharts() {
+  const v43=P43.stages.map(r=>r.modeled_savings_per_minute_usd);
+  const c43=P43.stages.map(r=>r.partial?'#f6df53':(r.modeled_savings_per_minute_usd>=0?'#23d7e8':'#ff6277'));
+  const l43=P43.stages.map(r=>'S'+r.level);
+  drawBars(document.getElementById('chart43'),v43,c43,l43,true);
+
+  const v44=P44.rounds.map(r=>r.persistent_advantage_vs_baseline_per_minute_usd);
+  const c44=P44.rounds.map(()=> '#ef58b7');
+  const l44=P44.rounds.map(r=>'R'+r.round);
+  drawBars(document.getElementById('chart44'),v44,c44,l44,true);
+}
+
+render43Table();
+render44Table();
+renderCharts();
+if (location.hash.toLowerCase()==='#program44') activate('p44');
+</script>
+</body>
+</html>
